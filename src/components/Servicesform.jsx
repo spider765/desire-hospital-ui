@@ -10,9 +10,6 @@ function ServiceForm({ onServiceCreated }) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    // 1️⃣ Use the global API URL
-    const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001";
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
@@ -27,28 +24,17 @@ function ServiceForm({ onServiceCreated }) {
             if (logo) formData.append("logo", logo);
             if (image) formData.append("image", image);
 
-            // 2️⃣ Updated fetch URL to use the dynamic API_URL
-            const res = await fetch(`${API_URL}/services`, {
+            const res = await fetch("https://desire-specialist-hospital.onrender.com/services", {
                 method: "POST",
                 body: formData
-                // Note: Browser automatically handles Content-Type for FormData
             });
 
             if (!res.ok) {
-                const errorData = await res.json();
-                throw new Error(errorData.message || "Failed to create service");
+                throw new Error("Failed to create service");
             }
 
             const newService = await res.json();
-            
-            // Safety check in case the parent prop isn't passed
-            if (onServiceCreated) {
-                onServiceCreated(newService);
-            }
-
-            alert("✅ Service added successfully!");
-
-            // Reset form
+            onServiceCreated(newService);
             setName("");
             setTitle("");
             setText("");
@@ -57,7 +43,6 @@ function ServiceForm({ onServiceCreated }) {
             setImage(null);
         } catch (err) {
             setError(err.message);
-            console.error("Submission error:", err);
         } finally {
             setLoading(false);
         }
@@ -66,95 +51,48 @@ function ServiceForm({ onServiceCreated }) {
     return (
         <form
             onSubmit={handleSubmit}
-            style={{ 
-                background: "#fff", 
-                padding: "1.5rem", 
-                borderRadius: "8px", 
-                marginBottom: "1rem",
-                display: "flex",
-                flexDirection: "column",
-                gap: "10px",
-                boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
-            }}
+            style={{ background: "#fff", padding: "1rem", borderRadius: "8px", marginBottom: "1rem" }}
         >
-            <h4 style={{ color: "#2E7D32" }}>Add New Service</h4>
-            {error && <p style={{ color: "red", fontSize: "14px" }}>{error}</p>}
+            <h4>Add New Service</h4>
+            {error && <p style={{ color: "red" }}>{error}</p>}
 
             <input
                 type="text"
-                placeholder="Service Name (e.g. Cardiology)"
+                placeholder="Service Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                style={inputStyle}
             />
             <input
                 type="text"
-                placeholder="Title (e.g. Heart Specialist)"
+                placeholder="Title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                style={inputStyle}
             />
             <input
                 type="text"
-                placeholder="Short Intro Text"
+                placeholder="Short Text"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                style={inputStyle}
             />
             <textarea
-                placeholder="Full Description"
+                placeholder="Description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                style={{ ...inputStyle, minHeight: "80px" }}
             />
-            
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "20px", marginTop: "10px" }}>
-                <label style={labelStyle}>
-                    Logo Icon:
-                    <input type="file" accept="image/*" onChange={(e) => setLogo(e.target.files[0])} />
-                </label>
-                <label style={labelStyle}>
-                    Featured Image:
-                    <input type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} />
-                </label>
-            </div>
-
-            <button 
-                type="submit" 
-                disabled={loading} 
-                style={buttonStyle(loading)}
-            >
-                {loading ? "Saving to Cloud..." : "Add Service"}
+            <label>
+                Logo:
+                <input type="file" onChange={(e) => setLogo(e.target.files[0])} />
+            </label>
+            <label>
+                Image:
+                <input type="file" onChange={(e) => setImage(e.target.files[0])} />
+            </label>
+            <button type="submit" disabled={loading}>
+                {loading ? "Saving..." : "Add Service"}
             </button>
         </form>
     );
 }
-
-const inputStyle = {
-    padding: "10px",
-    borderRadius: "5px",
-    border: "1px solid #ccc",
-};
-
-const labelStyle = {
-    fontSize: "14px",
-    display: "flex",
-    flexDirection: "column",
-    gap: "5px",
-    color: "#555"
-};
-
-const buttonStyle = (loading) => ({
-    backgroundColor: "#2E7D32",
-    color: "white",
-    padding: "12px",
-    border: "none",
-    borderRadius: "8px",
-    fontSize: "16px",
-    fontWeight: "600",
-    cursor: loading ? "not-allowed" : "pointer",
-    marginTop: "10px"
-});
 
 export default ServiceForm;

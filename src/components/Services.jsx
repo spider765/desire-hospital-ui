@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import './css/home.css';
 import './css/services.css';
 
+
 export default function Services() {
     const [services, setServices] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -12,18 +13,11 @@ export default function Services() {
     const startX = useRef(0);
     const scrollLeft = useRef(0);
 
-    // 1️⃣ Use the global API URL
-    const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001";
-
     useEffect(() => {
-        // 2️⃣ Fetch from the dynamic URL
-        fetch(`${API_URL}/services`)
-            .then(res => {
-                if (!res.ok) throw new Error("Failed to fetch services");
-                return res.json();
-            })
+        fetch("https://desire-specialist-hospital.onrender.com/services")
+            .then(res => res.json())
             .then(data => {
-                setServices(data.services || data || []);
+                setServices(data.services || []);
                 setLoading(false);
             })
             .catch(err => {
@@ -31,7 +25,7 @@ export default function Services() {
                 setError("Failed to load services.");
                 setLoading(false);
             });
-    }, [API_URL]);
+    }, []);
 
     useEffect(() => {
         if (services.length > 1) {
@@ -72,9 +66,9 @@ export default function Services() {
         scrollContainerRef.current.scrollBy({ left: 300, behavior: 'smooth' });
     };
 
-    if (loading) return <p style={{ textAlign: 'center', padding: '50px' }}>Loading services...</p>;
-    if (error) return <div className="container mt-4"><div className="alert alert-warning">{error}</div></div>;
-    if (services.length === 0) return <p style={{ textAlign: 'center', padding: '50px' }}>No services available at the moment.</p>;
+    if (loading) return <p>Loading services...</p>;
+    if (error) return <div className="alert alert-warning">{error}</div>;
+    if (services.length === 0) return <p>No services available at the moment.</p>;
 
     return (
         <section className="py-5 services-section" style={{ backgroundColor: '#F9F9F9' }}>
@@ -83,6 +77,7 @@ export default function Services() {
                     Our Services
                 </h2>
 
+                {/* Scrollable services list */}
                 <div
                     ref={scrollContainerRef}
                     className="services-scroll-container"
@@ -101,7 +96,7 @@ export default function Services() {
                 >
                     {services.map((service, index) => (
                         <div
-                            key={service.id || index}
+                            key={index}
                             className="rounded shadow-sm p-3 d-flex align-items-start service-card flex-wrap"
                             style={{
                                 backgroundColor: '#2E7D32',
@@ -113,6 +108,7 @@ export default function Services() {
                             }}
                             onClick={() => setActiveService(activeService === index ? null : index)}
                         >
+                            {/* Logo in card */}
                             <div className="me-3 flex-shrink-0">
                                 <img
                                     src={service.logo_url || '/images/default_service.png'}
@@ -129,21 +125,25 @@ export default function Services() {
                                 />
                             </div>
 
+                            {/* Text content */}
                             <div className="text-start flex-grow-1">
-                                <h4 className="mb-1" style={{ color: '#FFFFFF' }}>{service.name}</h4>
-                                <b><h5 className="fw-semibold" style={{ color: '#E0E0E0' }}>{service.title || "Professional healthcare service"}</h5></b>
-                                <p className="fw-semibold mb-0" style={{ color: '#BDBDBD' }}>{service.text || "Quality medical care you can trust."}</p>
+                                <h4 className="mb-1">{service.name}</h4>
+                              <b>  <h5 className="fw-semibold">{service.title || "Professional healthcare service"}</h5></b>
+                                <p className="fw-semibold mb-0" style={{ color: 'silver',
+                                    }} >{service.text || "Quality medical care you can trust."}</p>
                             </div>
                         </div>
                     ))}
                 </div>
 
+                {/* Prev & Next buttons */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
-                    <button type="button" onClick={scrollPrev} style={navBtnStyle}>Prev</button>
-                    <button type="button" onClick={scrollNext} style={navBtnStyle}>Next</button>
+                    <button onClick={scrollPrev} style={navBtnStyle}>Prev</button>
+                    <button onClick={scrollNext} style={navBtnStyle}>Next</button>
                 </div>
 
-                {activeService !== null && services[activeService] && (
+                {/* Description outside the cards */}
+                {activeService !== null && (
                     <div
                         style={{
                             marginTop: '20px',
@@ -160,11 +160,13 @@ export default function Services() {
                             {services[activeService].name}
                         </h5>
 
+                        {/* 50/50 split container */}
                         <div style={{
                             display: 'flex',
-                            flexWrap: 'wrap',
+                            // allows wrapping under image
                             gap: '15px'
                         }}>
+                            {/* Text Side */}
                             <div style={{
                                 flex: '1 1 50%',
                                 minWidth: '250px'
@@ -174,6 +176,7 @@ export default function Services() {
                                 </p>
                             </div>
 
+                            {/* Image Side */}
                             <div style={{
                                 flex: '1 1 50%',
                                 minWidth: '250px'
@@ -195,6 +198,8 @@ export default function Services() {
                         </div>
                     </div>
                 )}
+
+
             </div>
         </section>
     );

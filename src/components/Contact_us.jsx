@@ -10,9 +10,6 @@ export default function ContactPage() {
 
     const [loading, setLoading] = useState(false);
 
-    // Use environment variable for production, fallback to localhost for dev
-    const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001";
-
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -26,7 +23,7 @@ export default function ContactPage() {
 
         try {
             // 1️⃣ Save to Rails backend
-            const backendRes = await fetch(`${API_URL}/messages`, {
+            const backendRes = await fetch("https://desire-specialist-hospital.onrender.com/messages", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ message: formData }),
@@ -60,6 +57,7 @@ export default function ContactPage() {
 
     return (
         <div style={{ fontFamily: "'Segoe UI', sans-serif", padding: "20px" }}>
+            {/* Page Title */}
             <h1 style={{ textAlign: "center", color: "#2E7D32", fontWeight: "700" }}>
                 Contact Us
             </h1>
@@ -127,8 +125,7 @@ export default function ContactPage() {
                 <div style={{ padding: "10px" }}>
                     <h3 style={{ color: "#2E7D32" }}>Our Contact Details</h3>
                     <p><strong>Phone:</strong> <a href="tel:+2349044444811">+2349044444811</a></p>
-                    {/* Fixed Email Link: Added mailto: */}
-                    <p><strong>Email:</strong> <a href="mailto:desirespecialisthospital@gmail.com">desirespecialisthospital@gmail.com</a></p>
+                    <p><strong>Email:</strong> <a href="desirespecialisthospital@gmail.com">desirespecialisthospital@gmail.com</a></p>
                     <p><strong>Address:</strong> 93 Adeoyo-Oje Road, Yemetu St, Ibadan 200284, Oyo</p>
 
                     <h4 style={{ marginTop: "20px", color: "#2E7D32" }}>Business Hours</h4>
@@ -136,23 +133,21 @@ export default function ContactPage() {
 
                     <h4 style={{ marginTop: "20px", color: "#2E7D32" }}>Follow Us</h4>
                     <div style={{ display: "flex", gap: "10px" }}>
-                        {/* Fixed Links: Changed # to javascript:void(0) to satisfy ESLint */}
-                        <a href="https://facebook.com" target="_blank" rel="noreferrer">Facebook</a>
-                        <a href="https://instagram.com" target="_blank" rel="noreferrer">Instagram</a>
-                        <a href="https://twitter.com" target="_blank" rel="noreferrer">Twitter</a>
+                        <a href="#">Facebook</a>
+                        <a href="#">Instagram</a>
+                        <a href="#">Twitter</a>
                     </div>
                 </div>
             </div>
 
             {/* Map */}
-            <div style={{ marginTop: "30px", overflow: "hidden", borderRadius: "12px" }}>
+            <div style={{ marginTop: "30px" }}>
                 <iframe
-                    title="Desire Specialist Hospital Location" 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3956.46743389456!2d3.8967!3d7.3989!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zN8KwMjMnNTYuMCJOIDPCsDUzJzQ4LjEiRQ!5e0!3m2!1sen!2sng!4v1620000000000"
-                    width="100%"
+                    src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3956.6360282238834!2d3.9059198!3d7.3946175!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x10398dd28bc5e49b%3A0x53a154ec71094526!2sDesire%20Specialist%20Hospital!5e0!3m2!1sen!2sng!4v1755079529791!5m2!1sen!2sng"
+                    width="600"
                     height="450"
                     style={{ border: 0 }}
-                    allowFullScreen=""
+                    allowFullScreen
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
                 ></iframe>
@@ -177,5 +172,4 @@ const buttonStyle = (loading) => ({
     fontSize: "16px",
     fontWeight: "600",
     cursor: loading ? "not-allowed" : "pointer",
-    opacity: loading ? 0.7 : 1
 });

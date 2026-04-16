@@ -3,7 +3,6 @@ import emailjs from "emailjs-com";
 
 export default function AppointmentForm() {
     const [doctors, setDoctors] = useState([]);
-    const [loading, setLoading] = useState(false); // 1️⃣ Added loading state
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -14,15 +13,12 @@ export default function AppointmentForm() {
         notes: "",
     });
 
-    // 2️⃣ Use Production API URL
-    const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001";
-
     useEffect(() => {
-        fetch(`${API_URL}/doctors`)
+        fetch("https://desire-specialist-hospital.onrender.com/doctors")
             .then((res) => res.json())
-            .then((data) => setDoctors(data.doctors || data || []))
+            .then((data) => setDoctors(data.doctors || []))
             .catch((err) => console.error("Error fetching doctors:", err));
-    }, [API_URL]);
+    }, []);
 
     const handleChange = (e) => {
         setFormData({
@@ -33,26 +29,22 @@ export default function AppointmentForm() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setLoading(true); // Start loading
 
-        // 3️⃣ Send to Rails backend (Render)
-        fetch(`${API_URL}/appointments`, {
+        // 1️⃣ Send to Rails backend first
+        fetch("https://desire-specialist-hospital.onrender.com/appointments", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ appointment: formData }),
         })
-            .then((res) => {
-                if (!res.ok) throw new Error("Failed to save appointment to database");
-                return res.json();
-            })
+            .then((res) => res.json())
             .then(() => {
-                // 4️⃣ Send EmailJS after backend save succeeds
+                // 2️⃣ Send EmailJS after backend save succeeds
                 const selectedDoctor =
-                    doctors.find(doc => doc.id.toString() === formData.doctor_id.toString())?.name || "Unknown";
+                    doctors.find(doc => doc.id.toString() === formData.doctor_id)?.name || "Unknown";
 
                 return emailjs.send(
-                    "service_j5p3tlq", // Your Service ID
-                    "template_ffthkrd", // Your Template ID
+                    "service_j5p3tlq",
+                    "template_ffthkrd",
                     {
                         from_name: formData.name,
                         reply_to: formData.email,
@@ -62,11 +54,11 @@ export default function AppointmentForm() {
                         doctor: selectedDoctor,
                         notes: formData.notes,
                     },
-                    "ed3AitMYT32tPJrHC" // Your Public Key
+                    "ed3AitMYT32tPJrHC"
                 );
             })
             .then(() => {
-                alert("✅ Appointment booked & email sent successfully!");
+                alert("✅ Appointment booked & email sent!");
                 setFormData({
                     name: "",
                     email: "",
@@ -79,10 +71,7 @@ export default function AppointmentForm() {
             })
             .catch((err) => {
                 console.error("Error:", err);
-                alert("❌ Appointment failed. Please check your connection and try again.");
-            })
-            .finally(() => {
-                setLoading(false); // Stop loading
+                alert("❌ Something went wrong. Please try again.");
             });
     };
 
@@ -102,7 +91,12 @@ export default function AppointmentForm() {
                 fontFamily: "'Segoe UI', sans-serif",
             }}
         >
-            <h2 style={{ marginBottom: "10px", color: "#2E7D32", fontWeight: "600", textAlign: "center" }}>
+            <h2 style={{
+                marginBottom: "10px",
+                color: "#2E7D32",
+                fontWeight: "600",
+                textAlign: "center",
+            }}>
                 Book an Appointment
             </h2>
 
@@ -115,13 +109,11 @@ export default function AppointmentForm() {
             <input type="tel" name="phone" placeholder="Phone Number"
                    value={formData.phone} onChange={handleChange} required style={inputStyle} />
 
-            <div style={{ display: "flex", gap: "10px" }}>
-                <input type="date" name="appointment_date"
-                       value={formData.appointment_date} onChange={handleChange} required style={{ ...inputStyle, flex: 1 }} />
+            <input type="date" name="appointment_date"
+                   value={formData.appointment_date} onChange={handleChange} required style={inputStyle} />
 
-                <input type="time" name="appointment_time"
-                       value={formData.appointment_time} onChange={handleChange} required style={{ ...inputStyle, flex: 1 }} />
-            </div>
+            <input type="time" name="appointment_time"
+                   value={formData.appointment_time} onChange={handleChange} required style={inputStyle} />
 
             <select name="doctor_id" value={formData.doctor_id}
                     onChange={handleChange} required style={inputStyle}>
@@ -133,24 +125,25 @@ export default function AppointmentForm() {
                 ))}
             </select>
 
-            <textarea name="notes" placeholder="Additional Notes (Optional)"
+            <textarea name="notes" placeholder="Additional Notes"
                       value={formData.notes} onChange={handleChange}
                       style={{ ...inputStyle, minHeight: "80px" }} />
 
             <button type="submit"
-                    disabled={loading}
                     style={{
-                        backgroundColor: loading ? "#ccc" : "#2E7D32",
+                        backgroundColor: "#2E7D32",
                         color: "white",
                         padding: "12px",
                         border: "none",
                         borderRadius: "8px",
                         fontSize: "16px",
                         fontWeight: "600",
-                        cursor: loading ? "not-allowed" : "pointer",
+                        cursor: "pointer",
                         transition: "background-color 0.3s ease",
-                    }}>
-                {loading ? "Processing..." : "Confirm Appointment"}
+                    }}
+                    onMouseOver={(e) => e.target.style.backgroundColor = "#256428"}
+                    onMouseOut={(e) => e.target.style.backgroundColor = "#2E7D32"}>
+                Book Appointment
             </button>
         </form>
     );
