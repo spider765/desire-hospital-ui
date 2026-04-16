@@ -6,18 +6,29 @@ export default function Header() {
     const location = useLocation();
     const [isAdmin, setIsAdmin] = useState(false);
 
+    // 1️⃣ Define the API URL
+    const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001";
+
     useEffect(() => {
-        fetch("/api/admin/me", { credentials: "include" })
+        // 2️⃣ Use the absolute URL to check admin status
+        fetch(`${API_URL}/admin/me`, { 
+            method: "GET",
+            credentials: "include" 
+        })
             .then(res => res.json())
             .then(data => setIsAdmin(data.logged_in))
-            .catch(err => console.error("Failed to check admin status", err));
-    }, []);
+            .catch(err => {
+                // Silently fail—if the backend is down or not logged in, just don't show admin link
+                setIsAdmin(false);
+            });
+    }, [API_URL]);
 
     const navLinks = [
         { name: 'Home', path: '/' },
         { name: 'Services', path: '/services' },
         { name: 'Doctors', path: '/doctors' },
         { name: 'Contact us', path: '/contact' },
+        // Only show this link if the backend confirms we are logged in
         ...(isAdmin ? [{ name: 'Admin Panel', path: '/Destinysec190' }] : [])
     ];
 
@@ -28,8 +39,8 @@ export default function Header() {
                 {/* Brand Logo + Name */}
                 <Link className="navbar-brand d-flex align-items-center" to="/">
                     <img
-                        src="/images/hospital7.png"
-                        alt="Desire Specialist Hospital Logo"
+                        src="/images/hospital7.png" 
+                        alt="Logo"
                         style={{
                             height: '40px',
                             width: '40px',
@@ -66,7 +77,6 @@ export default function Header() {
                         ))}
                     </ul>
                 </div>
-
             </div>
         </nav>
     );

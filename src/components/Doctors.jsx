@@ -12,12 +12,20 @@ export default function Doctors() {
     const startX = useRef(0);
     const scrollLeft = useRef(0);
 
+    // 1️⃣ Define the Production API URL
+    const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001";
+
     // Fetch doctors
     useEffect(() => {
-        fetch("http://localhost:3001/doctors")
-            .then((res) => res.json())
+        // 2️⃣ Use the absolute URL
+        fetch(`${API_URL}/doctors`)
+            .then((res) => {
+                if (!res.ok) throw new Error("Failed to fetch doctors");
+                return res.json();
+            })
             .then((data) => {
-                setDoctors(data.doctors || []);
+                // Handle both { doctors: [] } and direct array responses
+                setDoctors(data.doctors || data || []);
                 setLoading(false);
             })
             .catch((err) => {
@@ -25,7 +33,7 @@ export default function Doctors() {
                 setError("Failed to load doctors.");
                 setLoading(false);
             });
-    }, []);
+    }, [API_URL]);
 
     // Auto-scroll loop
     useEffect(() => {
@@ -45,21 +53,14 @@ export default function Doctors() {
         }
     }, [doctors]);
 
-    // Mouse drag scroll
+    // Mouse drag scroll handlers (keep your existing logic)
     const handleMouseDown = (e) => {
         isDragging.current = true;
         startX.current = e.pageX - scrollContainerRef.current.offsetLeft;
         scrollLeft.current = scrollContainerRef.current.scrollLeft;
     };
-
-    const handleMouseLeave = () => {
-        isDragging.current = false;
-    };
-
-    const handleMouseUp = () => {
-        isDragging.current = false;
-    };
-
+    const handleMouseLeave = () => { isDragging.current = false; };
+    const handleMouseUp = () => { isDragging.current = false; };
     const handleMouseMove = (e) => {
         if (!isDragging.current) return;
         e.preventDefault();
@@ -68,18 +69,16 @@ export default function Doctors() {
         scrollContainerRef.current.scrollLeft = scrollLeft.current - walk;
     };
 
-    // Prev & Next button handlers
     const scrollPrev = () => {
         scrollContainerRef.current.scrollBy({ left: -300, behavior: 'smooth' });
     };
-
     const scrollNext = () => {
         scrollContainerRef.current.scrollBy({ left: 300, behavior: 'smooth' });
     };
 
-    if (loading) return <p>Loading doctors...</p>;
-    if (error) return <div className="alert alert-warning">{error}</div>;
-    if (doctors.length === 0) return <p>No doctors available at the moment.</p>;
+    if (loading) return <p style={{ textAlign: 'center', padding: '50px' }}>Loading our specialists...</p>;
+    if (error) return <div className="container mt-4"><div className="alert alert-warning">{error}</div></div>;
+    if (doctors.length === 0) return <p style={{ textAlign: 'center', padding: '50px' }}>No doctors available at the moment.</p>;
 
     return (
         <section className="py-5 doctors-section" style={{ backgroundColor: '#F9F9F9' }}>
@@ -88,9 +87,6 @@ export default function Doctors() {
                     Meet our medical staff
                 </h2>
 
-
-
-                {/* Scrollable container */}
                 <div
                     ref={scrollContainerRef}
                     className="doctor-scroll-container card-background"
@@ -100,7 +96,7 @@ export default function Doctors() {
                         overflowX: 'hidden',
                         cursor: isDragging.current ? 'grabbing' : 'grab',
                         userSelect: 'none',
-                        paddingBottom: '10px',
+                        paddingBottom: '20px',
                         backgroundColor: '#F9F9F9',
                     }}
                     onMouseDown={handleMouseDown}
@@ -110,59 +106,56 @@ export default function Doctors() {
                 >
                     {doctors.map((doctor, index) => (
                         <div
-                            key={index}
+                            key={doctor.id || index}
                             className="card card-cover overflow-hidden text-white rounded-5 shadow-lg doctor-card"
                             style={{
-                                backgroundImage: `url(${doctor.image_url || '/images/default_doctor.jpg'})`,
+                                // Use a linear gradient overlay so text is ALWAYS readable
+                                backgroundImage: `linear-gradient(rgba(255,255,255,0), rgba(255,255,255,0.8)), url(${doctor.image_url || '/images/default_doctor.jpg'})`,
                                 backgroundSize: 'cover',
                                 backgroundPosition: 'center center',
                                 backgroundRepeat: 'no-repeat',
-
-
-                                minHeight: '620px',
+                                minHeight: '500px',
                                 flex: '0 0 300px',
                                 transition: 'transform 0.3s ease',
+                                border: 'none'
                             }}
                             onMouseEnter={() => setActiveDoctor(index)}
                             onClick={() => setActiveDoctor(activeDoctor === index ? null : index)}
                         >
-                            <div
-                                className="d-flex flex-column h-100 p-4 text-shadow-1"
-
-                            >
-                                <h2 className="mt-auto mb-2 fs-4 fw-bold" style={{ color: '#2E7D32' }}>
+                            <div className="d-flex flex-column h-100 p-4">
+                                <h2 className="mt-auto mb-2 fs-4 fw-bold" style={{ color: '#2E7D32', textShadow: '1px 1px 2px rgba(255,255,255,0.5)' }}>
                                     {doctor.name}
                                 </h2>
-                                <p className="mb-3 fw-semibold fs-6" style={{ color: '#2E7D32' }}>
+                                <p className="mb-3 fw-bold fs-6" style={{ color: '#1B5E20' }}>
                                     {doctor.specialty}
                                 </p>
                             </div>
                         </div>
                     ))}
                 </div>
-                {/* Prev and Next buttons */}
+
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }} className="prev">
-                    <button onClick={scrollPrev} style={navBtnStyle}>Prev</button>
-                    <button onClick={scrollNext} style={navBtnStyle}>Next</button>
+                    <button type="button" onClick={scrollPrev} style={navBtnStyle}>Prev</button>
+                    <button type="button" onClick={scrollNext} style={navBtnStyle}>Next</button>
                 </div>
-                {/* Description area */}
-                {activeDoctor !== null && (
+
+                {activeDoctor !== null && doctors[activeDoctor] && (
                     <div
                         style={{
                             marginTop: '20px',
-                            background: '#F9F9F9',
-                            border: '1px solid #2E7D32',
-                            padding: '15px',
-                            borderRadius: '8px',
-                            boxShadow: '0 2px 6px rgba(0,0,0,0.1)'
+                            background: '#FFFFFF',
+                            border: '2px solid #2E7D32',
+                            padding: '20px',
+                            borderRadius: '12px',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
                         }}
                     >
-                        <h5>{doctors[activeDoctor].name}</h5>
-                        <p>{doctors[activeDoctor].description || "No description available for this doctor."}</p>
+                        <h5 style={{ color: '#2E7D32', fontWeight: 'bold' }}>{doctors[activeDoctor].name}</h5>
+                        <p style={{ color: '#444', lineHeight: '1.6' }}>
+                            {doctors[activeDoctor].description || "No description available for this doctor."}
+                        </p>
                     </div>
                 )}
-
-
             </div>
         </section>
     );
@@ -172,7 +165,8 @@ const navBtnStyle = {
     backgroundColor: '#2E7D32',
     color: '#F9F9F9',
     border: 'none',
-    padding: '6px 12px',
-    borderRadius: '4px',
-    cursor: 'pointer'
+    padding: '8px 16px',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    fontWeight: '600'
 };
