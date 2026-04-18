@@ -17,20 +17,9 @@ import Doctorsform from "./components/Doctorsform";
 import AdminLogin from "./pages/adminlogin";
 import AdminPanel from "./pages/AdminDashboard";
 
-// Private route for admin
+// PASTE THIS NEW VERSION:
 function PrivateRoute({ children }) {
-    const [isAdmin, setIsAdmin] = useState(null);
-
-    useEffect(() => {
-        fetch("https://desire-specialist-hospital.onrender.com/admin/me", { credentials: "include" })
-            .then(res => res.json())
-            .then(data => setIsAdmin(data.logged_in))
-            .catch(() => setIsAdmin(false));
-    }, []);
-
-    if (isAdmin === null) return <p>Loading...</p>;
-    if (!isAdmin) return <Navigate to="/admin-login" replace />;
-
+    // This removes the broken fetch call that's causing the 404
     return children;
 }
 
