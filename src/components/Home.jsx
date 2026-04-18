@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import './css/home.css';
+import hospitalImg from '../images/hospital_building.jpg';
+import aboutImg from '../images/about.jpg';
+import hospitalLogo from '../images/hospital7.png';
 
 const API_BASE_URL = 'https://desire-specialist-hospital.onrender.com';
-const PUB = process.env.PUBLIC_URL;
 
 export default function Home() {
     const [services, setServices] = useState([]);
@@ -92,7 +94,7 @@ export default function Home() {
                         </div>
                         <div className="flex-fill content-right d-flex justify-content-center mt-4 mt-md-0">
                             <div className="image-square">
-                                <img src={`${PUB}/images/hospital_building.jpg`} alt="Hospital" />
+                                <img src={hospitalImg} alt="Hospital" />
                             </div>
                         </div>
                     </div>
@@ -108,7 +110,7 @@ export default function Home() {
                     <div className="row align-items-center">
                         <div className="col-md-6 mb-4 mb-md-0 image-square">
                             <img
-                                src={`${PUB}/images/about.jpg`}
+                                src={aboutImg}
                                 alt="About DÉSÍRE Specialist Hospital"
                                 className="img-fluid rounded shadow-sm"
                             />
@@ -147,7 +149,7 @@ export default function Home() {
                                         style={{ backgroundColor: '#2E7D32', color: '#212121' }}>
                                         <div className="me-3 flex-shrink-0">
                                             <img
-                                                src={service.image_url || `${PUB}/images/default_service.png`}
+                                                src={service.image_url || '/images/default_service.png'}
                                                 alt={service.name}
                                                 className="rounded"
                                                 style={{ width: '80px', height: '80px', objectFit: 'cover', backgroundColor: 'white', padding: '8px' }}
@@ -186,7 +188,7 @@ export default function Home() {
                                 <div className="col-12 col-md-4" key={index}>
                                     <div className="card card-cover h-100 overflow-hidden text-white rounded-5 shadow-lg doctor-card"
                                         style={{
-                                            backgroundImage: `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.5)), url(${doctor.image_url || `${PUB}/images/default_doctor.jpg`})`,
+                                            backgroundImage: `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.5)), url(${doctor.image_url || '/images/default_doctor.jpg'})`,
                                             backgroundSize: 'cover',
                                             backgroundPosition: 'center',
                                             minHeight: '400px',
@@ -200,7 +202,7 @@ export default function Home() {
                                             </p>
                                             <ul className="d-flex list-unstyled mt-auto card-drinfo">
                                                 <li className="me-auto">
-                                                    <img src={`${PUB}/images/hospital7.png`} alt="Logo" width="32" height="32"
+                                                    <img src={hospitalLogo} alt="Logo" width="32" height="32"
                                                         className="rounded-circle border border-white" />
                                                 </li>
                                                 <li className="d-flex align-items-center me-3" style={{ color: '#fff' }}>
