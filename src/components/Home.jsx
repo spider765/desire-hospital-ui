@@ -20,7 +20,7 @@ export default function Home() {
                 setLoading(prev => ({ ...prev, services: false }));
             })
             .catch(() => {
-                setError(prev => ({ ...prev, services: "Service information currently unavailable" }));
+                setError(prev => ({ ...prev, services: 'Service information currently unavailable' }));
                 setLoading(prev => ({ ...prev, services: false }));
             });
 
@@ -30,7 +30,7 @@ export default function Home() {
                 setLoading(prev => ({ ...prev, doctors: false }));
             })
             .catch(() => {
-                setError(prev => ({ ...prev, doctors: "Doctor information currently unavailable" }));
+                setError(prev => ({ ...prev, doctors: 'Doctor information currently unavailable' }));
                 setLoading(prev => ({ ...prev, doctors: false }));
             });
     }, []);
@@ -38,7 +38,7 @@ export default function Home() {
     const renderServiceSkeletons = () =>
         Array(6).fill(0).map((_, i) => (
             <div key={i} className="col-12 col-md-6">
-                <div className="rounded shadow-sm p-3 d-flex align-items-start flex-wrap" style={{ backgroundColor: '#e0e0e0' }}>
+                <div className="rounded shadow-sm p-3 d-flex align-items-start flex-wrap" style={{ backgroundColor: '#e0e0e0', minHeight: '100px' }}>
                     <div className="me-3 flex-shrink-0">
                         <div className="rounded" style={{ width: '80px', height: '80px', backgroundColor: '#f5f5f5' }}></div>
                     </div>
@@ -67,77 +67,80 @@ export default function Home() {
         ));
 
     return (
-        <div className="p-6">
+        <main className="home-page">
 
-            {/* Welcome Section */}
-            <section className="py-5 bg-light Container1">
-                <div className="container">
-                    <h1 className="display-5 fw-bold text-center mb-5" style={{ color: '#2E7D32' }}>
-                        Welcome to DÉSÍRE Specialist Hospital
-                    </h1>
-                    <div className="d-flex flex-column flex-md-row align-items-center">
-                        <div className="text-center text-md-start flex-fill pe-md-5 content-left">
-                            <p className="lead mt-3 mb-4" style={{ color: '#757575' }}>
-                                At DÉSÍRE Specialist Hospital, we believe that quality healthcare begins with compassion,
-                                expertise, and trust. We are a multi-specialist hospital dedicated to providing exceptional
-                                care in orthopedics, trauma, internal medicine, and more.
-                            </p>
-                            <p style={{ fontSize: '1.1rem', color: '#212121' }}>
-                                Whether you're a first-time visitor or returning patient, we're honored to be your partner in health.
-                                <br />
-                                <strong>Your care. Our commitment. Always.</strong>
-                            </p>
-                            <div className="call-action mt-4">
-                                <a href="/book" className="buttonapp">Book Appointment</a>
-                                <a href="/contact" className="buttoncon">Contact us</a>
-                            </div>
+            {/* ── Hero ── */}
+            <section className="hero-section">
+                <div className="hero-section__inner">
+                    <div className="hero-section__text">
+                        <span className="hero-section__badge">Specialist Care · Ibadan, Nigeria</span>
+                        <h1 className="hero-section__title">
+                            Welcome to <span className="hero-section__accent">DÉSÍRE</span><br />Specialist Hospital
+                        </h1>
+                        <p className="hero-section__sub">
+                            At DÉSÍRE Specialist Hospital, we believe quality healthcare begins with compassion,
+                            expertise, and trust — delivering exceptional care in orthopedics, trauma, internal
+                            medicine, and more.
+                        </p>
+                        <p className="hero-section__tagline">
+                            Your care. Our commitment. <strong>Always.</strong>
+                        </p>
+                        <div className="hero-section__actions">
+                            <a href="/book" className="buttonapp">Book Appointment</a>
+                            <a href="/contact" className="buttoncon">Contact Us</a>
                         </div>
-                        <div className="flex-fill content-right d-flex justify-content-center mt-4 mt-md-0">
-                            <div className="image-square">
-                                <img src={hospitalImg} alt="Hospital" />
-                            </div>
-                        </div>
+                    </div>
+                    <div className="hero-section__image-wrap">
+                        <img src={hospitalImg} alt="DÉSÍRE Specialist Hospital building" />
                     </div>
                 </div>
             </section>
 
-            {/* About Us Section */}
-            <section className="py-5 about-us-section Container1" style={{ backgroundColor: '#F9F9F9' }}>
-                <div className="container">
-                    <h2 className="mb-4 fw-semibold text-center" style={{ fontSize: '1.75rem', color: '#2E7D32' }}>
-                        About Us
-                    </h2>
-                    <div className="row align-items-center">
-                        <div className="col-md-6 mb-4 mb-md-0 image-square">
-                            <img
-                                src={aboutImg}
-                                alt="About DÉSÍRE Specialist Hospital"
-                                className="img-fluid rounded shadow-sm"
-                            />
+            {/* ── Stats ── */}
+            <section className="stats-section">
+                <div className="stats-section__grid">
+                    {[
+                        { value: '10+', label: 'Years of Care' },
+                        { value: '20+', label: 'Specialist Doctors' },
+                        { value: '5,000+', label: 'Patients Served' },
+                        { value: '24/7', label: 'Emergency Support' },
+                    ].map((s, i) => (
+                        <div className="stat-item" key={i}>
+                            <span className="stat-item__value">{s.value}</span>
+                            <span className="stat-item__label">{s.label}</span>
                         </div>
-                        <div className="col-md-6">
-                            <p className="lead" style={{ color: '#555' }}>
-                                DÉSÍRE Specialist Hospital is a multi-specialty healthcare facility committed to delivering
-                                exceptional medical care with compassion, precision, and professionalism.
-                            </p>
-                            <p style={{ color: '#757575' }}>
-                                Our team of experienced doctors, nurses, and support staff work together to ensure that every
-                                patient receives personalized treatment in a safe and comfortable environment.
-                                From routine checkups to complex surgeries, we are here to serve your health needs 24/7.
-                            </p>
-                            <a href="/about" className="btn fw-medium mt-3"
-                                style={{ backgroundColor: '#2E7D32', color: '#fff', borderRadius: '6px', padding: '8px 16px' }}>
-                                Learn More
-                            </a>
-                        </div>
-                    </div>
+                    ))}
                 </div>
             </section>
 
-            {/* Services Section */}
+            {/* ── About ── */}
+            <section className="about-section">
+                <div className="about-section__image-wrap">
+                    <img src={aboutImg} alt="About DÉSÍRE Specialist Hospital" />
+                </div>
+                <div className="about-section__content">
+                    <span className="section-eyebrow">Who we are</span>
+                    <h2 className="section-heading">Excellence in Healthcare Since Day One</h2>
+                    <p>
+                        DÉSÍRE Specialist Hospital is a multi-specialty healthcare facility committed to
+                        delivering exceptional medical care with compassion, precision, and professionalism.
+                    </p>
+                    <p>
+                        Our experienced team of doctors, nurses, and support staff ensure every patient
+                        receives personalized treatment in a safe, comfortable environment — from routine
+                        checkups to complex surgeries, 24/7.
+                    </p>
+                    <a href="/about" className="buttonapp" style={{ marginTop: '1rem', display: 'inline-block' }}>
+                        Learn More
+                    </a>
+                </div>
+            </section>
+
+            {/* ── Services ── */}
             <section className="mb-5 services-container">
                 <div className="container text-center">
-                    <h2 className="mb-4 fw-semibold" style={{ fontSize: '1.75rem', color: '#2E7D32' }}>
+                    <span className="section-eyebrow">What we offer</span>
+                    <h2 className="section-heading" style={{ fontSize: '1.75rem', color: '#2E7D32' }}>
                         Our Services
                     </h2>
                     {error.services && <div className="alert alert-warning">{error.services}</div>}
@@ -145,24 +148,29 @@ export default function Home() {
                         {loading.services ? renderServiceSkeletons() : (
                             services.slice(0, 6).map((service, index) => (
                                 <div key={index} className="col-12 col-md-6">
-                                    <div className="rounded shadow-sm p-3 d-flex align-items-start service-card flex-wrap"
-                                        style={{ backgroundColor: '#2E7D32', color: '#212121' }}>
-                                        <div className="me-3 flex-shrink-0">
-                                            <img
-                                                src={service.image_url || '/images/default_service.png'}
-                                                alt={service.name}
-                                                className="rounded"
-                                                style={{ width: '80px', height: '80px', objectFit: 'cover', backgroundColor: 'white', padding: '8px' }}
-                                            />
-                                        </div>
-                                        <div className="text-start flex-grow-1">
-                                            <h4 className="mb-1" style={{ color: '#fff' }}>{service.name}</h4>
-                                            <p className="mb-0 fw-semibold" style={{ fontSize: '0.95rem', color: '#e0e0e0' }}>
-                                                {service.title || service.text || 'Professional healthcare service'}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
+    <div className="service-card-modern d-flex align-items-center gap-3 p-3 rounded-4 shadow-sm">
+        
+        {/* Image */}
+        <div className="service-icon">
+            <img
+                src={service.image_url || hospitalLogo}
+                alt={service.name}
+            />
+        </div>
+
+        {/* Content */}
+        <div className="flex-grow-1 text-start">
+            <h4 className="service-title mb-1">
+                {service.name}
+            </h4>
+
+            <p className="service-text mb-0">
+                {service.title || service.text || 'Professional healthcare service'}
+            </p>
+        </div>
+
+    </div>
+</div>
                             ))
                         )}
                     </div>
@@ -175,10 +183,11 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* Doctors Section */}
+            {/* ── Doctors ── */}
             <section className="py-5 doctors-section" style={{ backgroundColor: '#F9F9F9' }}>
                 <div className="container">
-                    <h2 className="mb-4 fw-semibold" style={{ fontSize: '1.5rem', color: '#2E7D32' }}>
+                    <span className="section-eyebrow">Meet the team</span>
+                    <h2 className="mb-4 fw-semibold section-heading" style={{ fontSize: '1.5rem', color: '#2E7D32' }}>
                         Our Doctors
                     </h2>
                     {error.doctors && <div className="alert alert-warning">{error.doctors}</div>}
@@ -186,13 +195,15 @@ export default function Home() {
                         {loading.doctors ? renderDoctorSkeletons() : (
                             doctors.slice(0, 4).map((doctor, index) => (
                                 <div className="col-12 col-md-4" key={index}>
-                                    <div className="card card-cover h-100 overflow-hidden text-white rounded-5 shadow-lg doctor-card"
+                                    <div
+                                        className="card card-cover h-100 overflow-hidden text-white rounded-5 shadow-lg doctor-card"
                                         style={{
-                                            backgroundImage: `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.5)), url(${doctor.image_url || '/images/default_doctor.jpg'})`,
+                                            backgroundImage: `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.5)), url(${doctor.image_url || hospitalLogo})`,
                                             backgroundSize: 'cover',
                                             backgroundPosition: 'center',
                                             minHeight: '400px',
-                                        }}>
+                                        }}
+                                    >
                                         <div className="d-flex flex-column h-100 p-4">
                                             <h2 className="mt-auto mb-2 fs-4 fw-bold" style={{ color: '#fff' }}>
                                                 {doctor.name}
@@ -227,6 +238,8 @@ export default function Home() {
                 </div>
             </section>
 
-        </div>
+            
+
+        </main>
     );
 }
