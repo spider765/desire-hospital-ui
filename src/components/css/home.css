@@ -268,3 +268,11 @@
     margin-top: 20px; /* space between paragraph and buttons */
 }
 
+.Container1 {
+    overflow: hidden;
+    animation: slideInRight 0.8s ease-out forwards;
+}
+
+.Container1.animation-done {
+    overflow: visible;
+}
